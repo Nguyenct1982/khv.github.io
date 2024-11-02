@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Lab: Kính Hiển Vi Tương Tác</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f3f4f6; margin: 0; padding: 20px; }
+        #lab-container { margin-top: 20px; width: 90%; max-width: 600px; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); text-align: center; }
+        #microscope-container { position: relative; width: 300px; margin-top: 20px; }
+        #microscope { width: 100%; cursor: pointer; }
+        .annotation { position: absolute; background-color: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 4px; border: 1px solid #ddd; display: none; }
+        #magnification-image { width: 100%; max-width: 300px; height: 300px; margin-top: 20px; background-size: cover; display: flex; align-items: center; justify-content: center; color: black; font-size: 18px; text-align: center; }
+        .button { padding: 10px 15px; margin: 5px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px; }
+        .button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+
+<h1>Virtual Lab: Kính Hiển Vi Tương Tác</h1>
+<p>Nhấp vào các bộ phận của kính hiển vi để tìm hiểu cấu tạo, và xoay vật kính để thay đổi độ phóng đại.</p>
+
+<div id="lab-container">
+    <!-- Container cho hình ảnh kính hiển vi -->
+    <div id="microscope-container">
+        <img id="microscope" src="https://pngimg.com/uploads/microscope/microscope_PNG31.png" alt="Microscope Image">
+        <!-- Các chú thích cấu tạo kính hiển vi -->
+        <div class="annotation" id="eyepiece" style="top: 10px; left: 80px;">Thị kính</div>
+        <div class="annotation" id="objective" style="top: 90px; left: 120px;">Vật kính</div>
+        <div class="annotation" id="stage" style="top: 140px; left: 120px;">Bàn để mẫu</div>
+        <div class="annotation" id="light-source" style="top: 280px; left: 160px;">Nguồn sáng</div>
+    </div>
+
+    <button class="button" onclick="rotateObjective()">Xoay vật kính</button>
+    <div id="magnification-image">Mẫu vật sẽ hiển thị ở đây</div>
+</div>
+
+<script>
+    let currentMagnification = 10;
+
+    // Xử lý sự kiện nhấp vào các bộ phận của kính hiển vi
+    document.getElementById("microscope").addEventListener("click", function(event) {
+        const x = event.offsetX;
+        const y = event.offsetY;
+        
+        // Kiểm tra vị trí nhấp vào và hiển thị chú thích tương ứng
+        if (x > 70 && x < 130 && y > 0 && y < 50) {
+            toggleAnnotation("eyepiece");
+        } else if (x > 80 && x < 150 && y > 120 && y < 180) {
+            toggleAnnotation("objective");
+        } else if (x > 110 && x < 180 && y > 190 && y < 230) {
+            toggleAnnotation("stage");
+        } else if (x > 150 && x < 220 && y > 270 && y < 320) {
+            toggleAnnotation("light-source");
+        } else {
+            hideAllAnnotations();
+        }
+    });
+
+    function toggleAnnotation(id) {
+        hideAllAnnotations();
+        document.getElementById(id).style.display = "block";
+    }
+
+    function hideAllAnnotations() {
+        const annotations = document.getElementsByClassName("annotation");
+        for (let i = 0; i < annotations.length; i++) {
+            annotations[i].style.display = "none";
+        }
+    }
+
+    // Xoay vật kính để thay đổi độ phóng đại
+    function rotateObjective() {
+        if (currentMagnification === 10) {
+            currentMagnification = 40;
+        } else if (currentMagnification === 40) {
+            currentMagnification = 100;
+        } else {
+            currentMagnification = 10;
+        }
+        updateMagnificationView();
+    }
+
+    // Cập nhật hiển thị mẫu vật dựa trên độ phóng đại hiện tại
+    function updateMagnificationView() {
+        const magnificationImage = document.getElementById("magnification-image");
+        let sampleImage = '';
+
+        if (currentMagnification === 10) {
+            sampleImage = 'https://i0.wp.com/briechildress.com/wp-content/uploads/Onion-Cell-250x-1.jpg?w=1680&ssl=1';
+        } else if (currentMagnification === 40) {
+            sampleImage = 'https://farwell.glk12.org/pluginfile.php/24178/mod_resource/content/0/flvs/educator_biology_v8_gs/module03/imagmod03/03_01b_b_a_b_01.jpg';
+        } else if (currentMagnification === 100) {
+            sampleImage = 'https://media.gettyimages.com/id/1178615438/photo/normal-blood-smear-showing-red-blood-cells-and-a-platelet-400x.jpg?s=1024x1024&w=gi&k=20&c=kM2Tv5AiSkjOvTH7E2E8OLQqnt3OWLSi6ZqU3btoSBM=';
+        }
+        
+        magnificationImage.style.backgroundImage = `url(${sampleImage})`;
+        magnificationImage.innerText = `Phóng đại ${currentMagnification}x`;
+    }
+</script>
+
+</body>
+</html>
